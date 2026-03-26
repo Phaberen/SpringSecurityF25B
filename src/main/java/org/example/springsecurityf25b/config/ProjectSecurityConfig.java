@@ -14,9 +14,11 @@ public class ProjectSecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrfConfig -> csrfConfig.disable())
+        http.csrf((csrf) -> csrf.ignoringRequestMatchers("/contact","/register"))
+        //http.csrf(csrfConfig -> csrfConfig.disable())
                 .authorizeHttpRequests((requests) -> { requests
-                        .requestMatchers("/myAccount","/myBalance").authenticated()
+                        .requestMatchers("/myAccount").hasRole("ADMIN")
+                        .requestMatchers("/myBalance").hasAnyRole("ADMIN","SALES")
                         .requestMatchers("/contact", "/register").permitAll();
                 });
         http.formLogin(Customizer.withDefaults());

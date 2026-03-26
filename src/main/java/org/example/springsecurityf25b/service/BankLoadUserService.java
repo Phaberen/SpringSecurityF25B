@@ -31,7 +31,10 @@ public class BankLoadUserService implements UserDetailsService {
             userName = customer.get().getEmail();
             password = customer.get().getPwd();
             authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(customer.get().getRole()));
+            String[] roles = customer.get().getRole().split(",");
+            for (String role : roles) {
+                authorities.add(new SimpleGrantedAuthority(role.trim()));
+            }
     } else {
             throw new UsernameNotFoundException("User details not found for the user:" + username);
         }
