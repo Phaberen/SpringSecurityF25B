@@ -7,7 +7,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.example.springsecurityf25b.constants.SecurityConstants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +17,7 @@ import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
 
@@ -38,15 +38,15 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
                     .issuer("Eazy Bank")
                     .subject("JWT Token")
                     .claim("username", authentication.getName())
-                    .claim("authorities", authentication.getAuthorities())
+                    .claim("authorities", authentication.getAuthorities().stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .collect(Collectors.joining(",")))
                     .issuedAt(new Date())
                     .expiration(new Date(new Date().getTime() + SecurityConstants.JWT_EXPIRATION))
                     .signWith(secretKey)
                     .compact();
 
-
-
-
+            response.setHeader(SecurityConstants.JWT_HEADER, jwt);
         }
 
         filterChain.doFilter(request, response); // always last filter to execute
