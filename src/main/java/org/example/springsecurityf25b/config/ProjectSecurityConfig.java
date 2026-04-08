@@ -8,7 +8,10 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
+// this class is used to configure the security of the application
+// this is done by creating a bean of type SecurityFilterChain and,
+// configuring it with the HttpSecurity object & then
+// returning the built object of type SecurityFilterChain
 @Configuration
 public class ProjectSecurityConfig {
 
